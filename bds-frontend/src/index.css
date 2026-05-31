@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #f97316; border-radius: 3px; }
+
+/* Transition mặc định */
+* { transition-property: color, background-color, border-color;
+    transition-duration: 150ms; }
