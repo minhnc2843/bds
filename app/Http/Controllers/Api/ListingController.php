@@ -8,7 +8,7 @@ use App\Models\Listing;
 use App\Models\ListingImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use App\Events\NewListingSubmitted;
 class ListingController extends Controller
 {
     // =====================
@@ -116,6 +116,7 @@ class ListingController extends Controller
             'message' => 'Đăng tin thành công, chờ admin duyệt',
             'listing' => $listing->load('images'),
         ], 201);
+        broadcast(new NewListingSubmitted($listing))->toOthers();
     }
 
     // =====================

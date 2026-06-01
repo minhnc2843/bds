@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Listing;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Events\ListingStatusChanged;
+use App\Models\Notification;
 class AdminController extends Controller
 {
     // =====================
@@ -64,35 +65,53 @@ class AdminController extends Controller
     }
 
     // Duyệt tin
-    public function approveListing($id)
-    {
-        $listing = Listing::findOrFail($id);
-        $listing->update([
-            'status'     => 'active',
-            'expired_at' => now()->addDays(30),
-        ]);
+   public function approveListing($id)
+{
+    $listing = Listing::with('user')->findOrFail($id);
+    $listing->update([
+        'status'     => 'active',
+        'expired_at' => now()->addDays(30),
+    ]);
 
-        return response()->json([
-            'message' => 'Duyệt tin thành công',
-            'listing' => $listing,
-        ]);
-    }
+    // Lưu notification vào DB
+    Notification::create([
+        'user_id' => $listing->user_id,
+        'type'    => 'listing_approved',
+        'title'   => 'Tin đăng được duyệt ✅',
+        'body'    => "Tin \"{$listing->title}\" đã được duyệt và đang hiển thị.",
+        'data'    => ['listing_id' => $listing->id],
+    ]);
+
+    // Broadcast realtime
+    broadcast(new ListingStatusChanged($listing, 'active'))->toOthers();
+
+    return response()->json([
+        'message' => 'Duyệt tin thành công',
+        'listing' => $listing,
+    ]);
+}
 
     // Từ chối tin
     public function rejectListing(Request $request, $id)
-    {
-        $request->validate([
-            'reason' => 'nullable|string|max:500',
-        ]);
+{
+    $listing = Listing::with('user')->findOrFail($id);
+    $listing->update(['status' => 'rejected']);
 
-        $listing = Listing::findOrFail($id);
-        $listing->update(['status' => 'rejected']);
+    Notification::create([
+        'user_id' => $listing->user_id,
+        'type'    => 'listing_rejected',
+        'title'   => 'Tin đăng bị từ chối ❌',
+        'body'    => "Tin \"{$listing->title}\" đã bị từ chối. Vui lòng chỉnh sửa lại.",
+        'data'    => ['listing_id' => $listing->id],
+    ]);
 
-        return response()->json([
-            'message' => 'Đã từ chối tin đăng',
-            'listing' => $listing,
-        ]);
-    }
+    broadcast(new ListingStatusChanged($listing, 'rejected'))->toOthers();
+
+    return response()->json([
+        'message' => 'Đã từ chối tin đăng',
+        'listing' => $listing,
+    ]);
+}
 
     // Xóa tin (admin)
     public function deleteListing($id)
