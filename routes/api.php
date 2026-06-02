@@ -8,7 +8,25 @@ use App\Http\Controllers\Api\SiteController;
 use App\Http\Controllers\Api\Admin\SiteSettingController;
 use App\Http\Controllers\Api\Admin\BannerController;
 use App\Http\Controllers\Api\Admin\PromotionController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\PageController;
+use App\Http\Controllers\Api\ContactMessageController;
+use App\Http\Controllers\Api\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Api\Admin\PageController as AdminPageController;
+use App\Http\Controllers\Api\Admin\ContactMessageController as AdminContactController;
+use App\Http\Controllers\Api\SearchController;
 Route::get('/site/config', [SiteController::class, 'config']);
+Route::get('/posts',              [PostController::class, 'index']);
+Route::get('/posts/categories',   [PostController::class, 'categories']);
+Route::get('/posts/{slug}',       [PostController::class, 'show']);
+Route::get('/pages/{slug}',       [PageController::class, 'show']);
+Route::post('/contact',           [ContactMessageController::class, 'store']);
+Route::prefix('search')->group(function () {
+    Route::get('/',        [SearchController::class, 'search']);
+    Route::get('/suggest', [SearchController::class, 'suggest']);
+    Route::get('/advanced',[SearchController::class, 'advanced']);
+    Route::get('/similar/{id}', [SearchController::class, 'similar']);
+});
 Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function () {
 
     // Dashboard
@@ -34,12 +52,24 @@ Route::prefix('notifications')->group(function () {
     Route::patch('/{id}/read',   [NotificationController::class, 'markRead']);
     Route::patch('/read-all',    [NotificationController::class, 'markAllRead']);
     Route::delete('/{id}',       [NotificationController::class, 'destroy']);
-});
-});
-Route::middleware(['auth:sanctum', 'is_admin'])
-    ->prefix('admin')->group(function () {
 
-    // Site settings
+
+    Route::get('/posts',            [AdminPostController::class, 'index']);
+    Route::post('/posts',           [AdminPostController::class, 'store']);
+    Route::post('/posts/{id}',      [AdminPostController::class, 'update']);
+    Route::delete('/posts/{id}',    [AdminPostController::class, 'destroy']);
+
+    // Pages
+    Route::get('/pages',            [AdminPageController::class, 'index']);
+    Route::put('/pages/{id}',       [AdminPageController::class, 'update']);
+
+    // Contact messages
+    Route::get('/contacts',         [AdminContactController::class, 'index']);
+    Route::get('/contacts/unread-count', [AdminContactController::class, 'unreadCount']);
+    Route::patch('/contacts/{id}',  [AdminContactController::class, 'update']);
+    Route::delete('/contacts/{id}', [AdminContactController::class, 'destroy']);
+});
+// Site settings
     Route::get('/settings',              [SiteSettingController::class, 'index']);
     Route::put('/settings',              [SiteSettingController::class, 'update']);
     Route::post('/settings/upload-image',[SiteSettingController::class, 'uploadImage']);

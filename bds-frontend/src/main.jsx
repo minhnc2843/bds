@@ -19,51 +19,75 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminListings  from './pages/admin/AdminListings'
 import AdminUsers     from './pages/admin/AdminUsers'
 import Profile from './pages/Profile'
+import SearchPage from './pages/SearchPage'
+import Blog        from './pages/Blog'
+import BlogDetail  from './pages/BlogDetail'
+import StaticPage  from './pages/StaticPage'
+import Contact     from './pages/Contact'
+import { useRealtimeNotifications, useRealtimeAdmin } from './hooks/useRealtime'
 const queryClient = new QueryClient()
-
+function AppWithRealtime({ children }) {
+  useRealtimeNotifications()
+  useRealtimeAdmin()
+  return children
+}
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-          <Header />
-          <div className="flex-1">
-            <Routes>
-              {/* Public */}
-              <Route path="/"            element={<Home />} />
-              <Route path="/listings/:id" element={<ListingDetail />} />
-              <Route path="/login"       element={<Login />} />
-              <Route path="/register"    element={<Register />} />
-              <Route path="/my-listings" element={
-                <ProtectedRoute><MyListings /></ProtectedRoute>
-              } />
-
-              <Route path="/listings/:id/edit" element={
-                <ProtectedRoute><ListingEdit /></ProtectedRoute>
-              } />
-            <Route path="/admin" element={
-              <AdminRoute><AdminLayout /></AdminRoute>
-            }>
-              <Route index        element={<AdminDashboard />} />
-              <Route path="listings" element={<AdminListings />} />
-              <Route path="users"    element={<AdminUsers />} />
-            </Route>
-
+  <BrowserRouter>
+    <AppWithRealtime>
+      <div className="min-h-screen bg-dark-900 flex flex-col">
+        <Header />
+        <div className="flex-1 pt-20"> {/* pt-20 vì header fixed */}
+          <Routes>
+            <Route path="/"              element={<Home />} />
+            <Route path="/search"        element={<SearchPage />} />
+            <Route path="/listings/:id"  element={<ListingDetail />} />
+            <Route path="/login"         element={<Login />} />
+            <Route path="/register"      element={<Register />} />
+            <Route path="/notifications" element={
+              <ProtectedRoute><Notifications /></ProtectedRoute>
+            } />
+            <Route path="/listings/create" element={
+              <ProtectedRoute><ListingCreate /></ProtectedRoute>
+            } />
+            <Route path="/listings/:id/edit" element={
+              <ProtectedRoute><ListingEdit /></ProtectedRoute>
+            } />
+            <Route path="/my-listings" element={
+              <ProtectedRoute><MyListings /></ProtectedRoute>
+            } />
             <Route path="/profile" element={
               <ProtectedRoute><Profile /></ProtectedRoute>
             } />
-              {/* Sẽ thêm sau */}
-              <Route path="/listings/create" element={
-                <ProtectedRoute><ListingCreate /></ProtectedRoute>} />
-              {/* <Route path="/admin/*" element={
-                <AdminRoute><AdminDashboard /></AdminRoute>
-              } /> */}
-            </Routes>
-          </div>
-          <Footer />
+            <Route path="/admin" element={
+              <AdminRoute><AdminLayout /></AdminRoute>
+            }>
+              <Route index           element={<AdminDashboard />} />
+              <Route path="listings" element={<AdminListings />} />
+              <Route path="users"    element={<AdminUsers />} />
+             
+<Route path="/blog"        element={<Blog />} />
+<Route path="/blog/:slug"  element={<BlogDetail />} />
+<Route path="/pages/:slug" element={<StaticPage />} />
+<Route path="/contact"     element={<Contact />} />
+            </Route>
+          </Routes>
         </div>
-        <Toaster position="top-right" />
-      </BrowserRouter>
-    </QueryClientProvider>
+        <Footer />
+      </div>
+    </AppWithRealtime>
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        style: {
+          background: 'transparent',
+          boxShadow: 'none',
+          padding: 0,
+        },
+      }}
+    />
+  </BrowserRouter>
+</QueryClientProvider>
   </StrictMode>
 )
