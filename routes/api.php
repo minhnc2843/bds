@@ -14,12 +14,19 @@ use App\Http\Controllers\Api\ContactMessageController;
 use App\Http\Controllers\Api\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Api\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Api\Admin\ContactMessageController as AdminContactController;
+use App\Http\Controllers\Api\SearchController;
 Route::get('/site/config', [SiteController::class, 'config']);
 Route::get('/posts',              [PostController::class, 'index']);
 Route::get('/posts/categories',   [PostController::class, 'categories']);
 Route::get('/posts/{slug}',       [PostController::class, 'show']);
 Route::get('/pages/{slug}',       [PageController::class, 'show']);
 Route::post('/contact',           [ContactMessageController::class, 'store']);
+Route::prefix('search')->group(function () {
+    Route::get('/',        [SearchController::class, 'search']);
+    Route::get('/suggest', [SearchController::class, 'suggest']);
+    Route::get('/advanced',[SearchController::class, 'advanced']);
+    Route::get('/similar/{id}', [SearchController::class, 'similar']);
+});
 Route::middleware(['auth:sanctum', 'is_admin'])->prefix('admin')->group(function () {
 
     // Dashboard
