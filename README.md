@@ -204,22 +204,20 @@ npm install
 
 ### 4. Cài & chạy Meilisearch
 
-Tải `meilisearch.exe` từ [github.com/meilisearch/meilisearch/releases](https://github.com/meilisearch/meilisearch/releases),
-để vào thư mục `bds-api/`, sau đó:
+> ⚠️ File `meilisearch.exe` KHÔNG được commit vào git vì vượt giới hạn 100MB.
+> Tải thủ công theo hướng dẫn dưới đây.
 
+**Tải Meilisearch:**
+1. Truy cập: https://github.com/meilisearch/meilisearch/releases/latest
+2. Tải file `meilisearch-windows-amd64.exe`
+3. Đổi tên thành `meilisearch.exe`
+4. Đặt vào thư mục `bds-api/`
+
+**Chạy Meilisearch:**
 ```bash
-# Terminal 1 — Meilisearch
 cd bds-api
 ./meilisearch.exe --master-key="masterKey"
 ```
-
-Index dữ liệu:
-```bash
-php artisan meilisearch:setup
-php artisan scout:import "App\Models\Listing"
-```
-
----
 
 ### 5. Chạy dự án (cần 3 terminal)
 
