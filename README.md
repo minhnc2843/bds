@@ -1,59 +1,326 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏠 BĐSViệt — Nền tảng Bất Động Sản Cao Cấp
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website mua bán & cho thuê bất động sản full-stack với giao diện sang trọng tối & gold.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Thành phần   | Công nghệ                                    |
+|-------------|----------------------------------------------|
+| Backend     | Laravel 12, Laravel Sanctum, Laravel Reverb  |
+| Frontend    | React 18, Vite, Tailwind CSS                 |
+| Database    | MySQL (phpMyAdmin)                           |
+| Realtime    | Laravel Reverb (WebSocket)                  |
+| Search      | Meilisearch + Laravel Scout                  |
+| State       | Zustand, TanStack React Query                |
+| UI          | Swiper, React Icons, React Hot Toast         |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📁 Cấu trúc dự án
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```
+/
+├── bds-api/          # Laravel 12 Backend
+│   ├── app/
+│   │   ├── Http/Controllers/Api/
+│   │   ├── Models/
+│   │   └── Events/
+│   ├── database/
+│   │   ├── migrations/
+│   │   └── seeders/
+│   └── routes/api.php
+│
+└── bds-frontend/     # React + Vite Frontend
+    ├── src/
+    │   ├── api/          # Axios config
+    │   ├── components/   # UI Components
+    │   ├── hooks/        # Custom React hooks
+    │   ├── pages/        # Trang chính + Admin
+    │   ├── store/        # Zustand stores
+    │   └── utils/        # Format helpers
+    └── index.html
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🗄️ Database Schema
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+users             → Tài khoản người dùng & admin
+categories        → Loại BĐS (căn hộ, studio...)
+provinces         → Tỉnh/Thành phố
+listings          → Tin đăng BĐS (bảng chính)
+listing_images    → Ảnh của từng tin đăng
+favorites         → Tin yêu thích của user
+contacts          → Yêu cầu liên hệ xem nhà
+notifications     → Thông báo realtime
+site_settings     → Cài đặt website (CMS)
+banners           → Banner slideshow trang chủ
+promotions        → Chương trình khuyến mãi
+post_categories   → Danh mục bài viết
+posts             → Bài viết blog/tin tức
+pages             → Trang tĩnh (Giới thiệu, CSBT...)
+contact_messages  → Tin nhắn liên hệ từ khách
+```
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## ✨ Tính năng
 
-## Contributing
+### 👤 Người dùng
+- Đăng ký / Đăng nhập / Đăng xuất
+- Cập nhật thông tin cá nhân, đổi mật khẩu
+- Upload ảnh đại diện
+- Đăng tin BĐS (mua bán / cho thuê)
+- Upload nhiều ảnh, chọn ảnh đại diện
+- Quản lý tin đăng của mình (sửa, xóa)
+- Nhận thông báo realtime khi tin được duyệt/từ chối
+- Trang thông báo với badge đếm chưa đọc
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 🔍 Tìm kiếm
+- Full-text search với Meilisearch
+- Autocomplete / gợi ý khi gõ
+- Tìm kiếm kết hợp: từ khóa + loại + tỉnh thành + giá + diện tích + số phòng ngủ
+- Facets thông minh (số lượng theo từng filter)
+- BĐS tương tự trong trang chi tiết
+- Sắp xếp: mới nhất, giá tăng/giảm, diện tích
 
-## Code of Conduct
+### 🏠 Trang chủ
+- Hero banner slideshow (Swiper, hiệu ứng fade)
+- Thanh tìm kiếm nổi bật trên hero
+- Thống kê: tổng tin, giao dịch, đánh giá
+- Chương trình khuyến mãi
+- Danh sách tin nổi bật (tab: Tất cả / Mua bán / Cho thuê)
+- Section "Tại sao chọn chúng tôi"
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 📰 Blog & Nội dung
+- Danh sách bài viết với filter theo danh mục
+- Trang chi tiết bài viết với bài liên quan
+- Share Facebook, copy link
+- Đếm lượt xem
+- Trang tĩnh: Giới thiệu, Điều khoản, Chính sách bảo mật
+- Trang Liên hệ với form gửi tin nhắn
 
-## Security Vulnerabilities
+### 🛠️ Admin CMS
+- Dashboard thống kê tổng quan
+- Quản lý tin đăng: duyệt / từ chối / xóa
+- Quản lý người dùng: khóa / mở khóa / xóa
+- **Banner CMS**: thêm/sửa/ẩn/xóa banner slideshow
+- **Promotion CMS**: tạo/xóa chương trình khuyến mãi
+- **Site Settings**: cập nhật logo, favicon, tên web, slogan, địa chỉ, hotline, email, mạng xã hội, SEO
+- **Bài viết**: tạo/sửa/xóa bài viết blog
+- **Trang tĩnh**: chỉnh sửa nội dung HTML
+- **Tin nhắn liên hệ**: xem, ghi chú, đánh dấu trạng thái
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### ⚡ Realtime (Laravel Reverb)
+- Admin nhận thông báo ngay khi có tin đăng mới
+- User nhận thông báo ngay khi tin được duyệt/từ chối
+- Badge số thông báo cập nhật tức thời
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🚀 Hướng dẫn chạy dự án
+
+### Yêu cầu
+- Windows + Laragon (PHP 8.2+, MySQL, Apache)
+- Node.js 18+
+- Composer
+- Git
+
+---
+
+### 1. Clone dự án
+
+```bash
+git clone https://github.com/your-username/bdsviet.git
+cd bdsviet
+```
+
+---
+
+### 2. Cài đặt Backend
+
+```bash
+cd bds-api
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Cấu hình `.env`:
+```env
+DB_DATABASE=bds_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+BROADCAST_CONNECTION=reverb
+SCOUT_DRIVER=meilisearch
+MEILISEARCH_HOST=http://127.0.0.1:7700
+MEILISEARCH_KEY=masterKey
+
+REVERB_APP_ID=my-app-id
+REVERB_APP_KEY=my-app-key
+REVERB_APP_SECRET=my-app-secret
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SCHEME=http
+```
+
+Tạo database `bds_db` trong phpMyAdmin, sau đó:
+
+```bash
+php artisan migrate
+php artisan db:seed --class=CategoryProvinceSeeder
+php artisan db:seed --class=SiteSettingsSeeder
+php artisan db:seed --class=PostCategorySeeder
+php artisan db:seed --class=PageSeeder
+php artisan storage:link
+```
+
+Tạo tài khoản Admin:
+```bash
+php artisan tinker
+App\Models\User::create([
+  'name'     => 'Super Admin',
+  'email'    => 'admin@bds.com',
+  'password' => bcrypt('admin123456'),
+  'role'     => 'admin',
+]);
+exit
+```
+
+---
+
+### 3. Cài đặt Frontend
+
+```bash
+cd ../bds-frontend
+npm install
+```
+
+---
+
+### 4. Cài & chạy Meilisearch
+
+Tải `meilisearch.exe` từ [github.com/meilisearch/meilisearch/releases](https://github.com/meilisearch/meilisearch/releases),
+để vào thư mục `bds-api/`, sau đó:
+
+```bash
+# Terminal 1 — Meilisearch
+cd bds-api
+./meilisearch.exe --master-key="masterKey"
+```
+
+Index dữ liệu:
+```bash
+php artisan meilisearch:setup
+php artisan scout:import "App\Models\Listing"
+```
+
+---
+
+### 5. Chạy dự án (cần 3 terminal)
+
+```bash
+# Terminal 1 — Meilisearch (giữ chạy)
+./meilisearch.exe --master-key="masterKey"
+
+# Terminal 2 — Laravel Reverb WebSocket
+cd bds-api
+php artisan reverb:start
+
+# Terminal 3 — React Frontend
+cd bds-frontend
+npm run dev
+```
+
+Laravel chạy qua Laragon (Apache):
+```
+http://localhost/bds-api/public
+```
+
+---
+
+### 6. Truy cập
+
+| URL | Mô tả |
+|-----|-------|
+| `http://localhost:5173` | Trang chủ người dùng |
+| `http://localhost:5173/admin` | Trang quản trị |
+| `http://localhost/bds-api/public/api` | Laravel API |
+| `http://127.0.0.1:7700` | Meilisearch Dashboard |
+
+---
+
+## 📡 API Endpoints tóm tắt
+
+```
+AUTH
+  POST   /api/auth/register
+  POST   /api/auth/login
+  GET    /api/auth/me
+  POST   /api/auth/logout
+
+LISTINGS (public)
+  GET    /api/listings
+  GET    /api/listings/{id}
+
+LISTINGS (auth)
+  POST   /api/listings
+  PUT    /api/listings/{id}
+  DELETE /api/listings/{id}
+  GET    /api/my-listings
+
+SEARCH
+  GET    /api/search
+  GET    /api/search/suggest
+  GET    /api/search/advanced
+  GET    /api/search/similar/{id}
+
+BLOG & PAGES
+  GET    /api/posts
+  GET    /api/posts/{slug}
+  GET    /api/posts/categories
+  GET    /api/pages/{slug}
+  POST   /api/contact
+
+PROFILE
+  PUT    /api/profile
+  PUT    /api/profile/password
+  POST   /api/profile/avatar
+
+NOTIFICATIONS
+  GET    /api/notifications
+  PATCH  /api/notifications/{id}/read
+  PATCH  /api/notifications/read-all
+  DELETE /api/notifications/{id}
+
+SITE CONFIG
+  GET    /api/site/config
+
+ADMIN (auth + role=admin)
+  GET    /api/admin/dashboard
+  GET/PATCH/DELETE /api/admin/listings
+  GET/PATCH/DELETE /api/admin/users
+  GET/PUT  /api/admin/settings
+  POST     /api/admin/settings/upload-image
+  CRUD     /api/admin/banners
+  CRUD     /api/admin/promotions
+  CRUD     /api/admin/posts
+  GET/PUT  /api/admin/pages
+  GET/PATCH/DELETE /api/admin/contacts
+```
+
+---
+
+## 👨‍💻 Tác giả
+
+Dự án được xây dựng với sự hỗ trợ của Claude AI (Anthropic).
+
+---
+
+## 📝 License
+
+MIT License
