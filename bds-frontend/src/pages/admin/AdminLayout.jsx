@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   FaTachometerAlt, FaListAlt, FaUsers,
   FaImage, FaFire, FaCog, FaNewspaper,
-  FaEnvelope, FaFileAlt,
+  FaEnvelope, FaFileAlt, FaHome, FaSignOutAlt,
 } from 'react-icons/fa'
 import useAuthStore from '../../store/authStore'
 import api from '../../api/axios'
@@ -22,15 +22,10 @@ const navItems = [
   // Divider label
   { type: 'divider', label: 'CÀI ĐẶT' },
 
-  { to: '/admin/banners',     label: 'Banners',     icon: <FaImage />       },
-  { to: '/admin/promotions',  label: 'Khuyến mãi',  icon: <FaFire />        },
-  { to: '/admin/settings',    label: 'Cài đặt',     icon: <FaCog />         },
-]
-const navItems = [
-  { to: '/admin',          label: 'Dashboard',    icon: <FaTachometerAlt />, end: true },
-  { to: '/admin/listings', label: 'Tin đăng',     icon: <FaListAlt /> },
-  { to: '/admin/users',    label: 'Người dùng',   icon: <FaUsers /> },
-]
+    { to: '/admin/banners',     label: 'Banners',     icon: <FaImage />       },
+    { to: '/admin/promotions',  label: 'Khuyến mãi',  icon: <FaFire />        },
+    { to: '/admin/settings',    label: 'Cài đặt',     icon: <FaCog />         },
+  ]
 
 export default function AdminLayout() {
   const { user, logout } = useAuthStore()
@@ -54,23 +49,6 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-
-     <nav className="flex-1 p-4 space-y-0.5 overflow-y-auto">
-  {navItems.map((item, i) => {
-    if (item.type === 'divider') return (
-      <p key={i} className="text-xs text-surface/50 uppercase
-        tracking-widest px-4 pt-4 pb-1 font-semibold">
-        {item.label}
-      </p>
-    )
-    return (
-      <NavLink key={item.to} to={item.to}
-        end={item.end} className={linkCls}>
-        <span>{item.icon}</span> {item.label}
-      </NavLink>
-    )
-  })}
-</nav>
       <aside className="w-56 bg-white shadow-sm flex flex-col
         fixed top-0 left-0 h-full z-40">
 

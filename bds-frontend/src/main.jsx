@@ -29,7 +29,8 @@ import AdminBanners    from './pages/admin/cms/AdminBanners'
 import AdminPromotions from './pages/admin/cms/AdminPromotions'
 import AdminPosts      from './pages/admin/cms/AdminPosts'
 import AdminContacts   from './pages/admin/cms/AdminContacts'
-import { useRealtimeNotifications, useRealtimeAdmin } from './hooks/useRealtime'
+import Notifications from './pages/Notifications'
+import { useRealtimeNotifications, useRealtimeAdmin } from './hooks/useRealtime.jsx'
 const queryClient = new QueryClient()
 function AppWithRealtime({ children }) {
   useRealtimeNotifications()
@@ -48,6 +49,10 @@ createRoot(document.getElementById('root')).render(
             <Route path="/"              element={<Home />} />
             <Route path="/search"        element={<SearchPage />} />
             <Route path="/listings/:id"  element={<ListingDetail />} />
+            <Route path="/blog"        element={<Blog />} />
+            <Route path="/blog/:slug"  element={<BlogDetail />} />
+            <Route path="/pages/:slug" element={<StaticPage />} />
+            <Route path="/contact"     element={<Contact />} />
             <Route path="/login"         element={<Login />} />
             <Route path="/register"      element={<Register />} />
             <Route path="/notifications" element={
@@ -71,16 +76,12 @@ createRoot(document.getElementById('root')).render(
               <Route index           element={<AdminDashboard />} />
               <Route path="listings" element={<AdminListings />} />
               <Route path="users"    element={<AdminUsers />} />
-             
-<Route path="/blog"        element={<Blog />} />
-<Route path="/blog/:slug"  element={<BlogDetail />} />
-<Route path="/pages/:slug" element={<StaticPage />} />
-<Route path="/contact"     element={<Contact />} />
-<Route path="settings"   element={<AdminSettings />} />
-<Route path="banners"    element={<AdminBanners />} />
-<Route path="promotions" element={<AdminPromotions />} />
-<Route path="posts"      element={<AdminPosts />} />
-<Route path="contacts"   element={<AdminContacts />} />
+
+              <Route path="settings"   element={<AdminSettings />} />
+              <Route path="banners"    element={<AdminBanners />} />
+              <Route path="promotions" element={<AdminPromotions />} />
+              <Route path="posts"      element={<AdminPosts />} />
+              <Route path="contacts"   element={<AdminContacts />} />
             </Route>
           </Routes>
         </div>

@@ -1,5 +1,11 @@
-import { useState} from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import { FaBuilding, FaKey, FaStar, FaHeadset, FaArrowRight, FaShieldAlt } from 'react-icons/fa'
 import { useListings } from '../hooks/useListings'
 import { useSiteConfig } from '../hooks/useSiteConfig'
 import ListingCard from '../components/listing/ListingCard'
@@ -7,26 +13,30 @@ import SearchBar from '../components/search/SearchBar'
 import Spinner from '../components/ui/Spinner'
 
 export default function Home() {
-  const [searchParams] = useSearchParams()
-  const [filters, setFilters] = useState({
-    type: searchParams.get('type') || '',
-    page: 1,
-  })
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialType = searchParams.get('type') || 'all'
 
+  const [activeTab, setActiveTab] = useState(initialType)
+  const [filters, setFilters] = useState({ type: initialType === 'all' ? '' : initialType, page: 1 })
 
-  const { data, isLoading, isError } = useListings(filters)
+  useEffect(() => {
+    setFilters((f) => ({ ...f, type: activeTab === 'all' ? '' : activeTab, page: 1 }))
+    // update URL search param
+    if (activeTab === 'all') setSearchParams({})
+    else setSearchParams({ type: activeTab })
+  }, [activeTab])
 
-  const tabData = {
-    all:  { data: allListings,  loading: loadingAll  },
-    sale: { data: saleListings, loading: loadingSale },
-    rent: { data: rentListings, loading: loadingRent },
-  }
+  const { data: listingsData, isLoading: listingsLoading } = useListings(filters)
+  const { data: siteData } = useSiteConfig()
 
-  const stats = [
+  const banners = siteData?.data?.banners || []
+  const promotions = siteData?.data?.promotions || []
+
+  const stats = siteData?.data?.stats || [
     { value: '10.000+', label: 'Tin đăng',       icon: <FaBuilding /> },
-    { value: '5.000+',  label: 'Giao dịch',       icon: <FaKey />     },
-    { value: '4.9★',    label: 'Đánh giá',         icon: <FaStar />    },
-    { value: '24/7',    label: 'Hỗ trợ',           icon: <FaHeadset /> },
+    { value: '5.000+',  label: 'Giao dịch',      icon: <FaKey />      },
+    { value: '4.9★',    label: 'Đánh giá',      icon: <FaStar />     },
+    { value: '24/7',    label: 'Hỗ trợ',         icon: <FaHeadset />  },
   ]
 
   return (
@@ -259,13 +269,13 @@ export default function Home() {
           </div>
 
           {/* Grid */}
-          {tabData[activeTab].loading ? (
+          {listingsLoading ? (
             <Spinner />
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2
                 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {tabData[activeTab].data?.data?.map((listing) => (
+                {(listingsData?.data?.data || listingsData?.data || []).map((listing) => (
                   <ListingCard key={listing.id} listing={listing} />
                 ))}
               </div>
