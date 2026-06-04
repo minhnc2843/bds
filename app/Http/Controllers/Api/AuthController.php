@@ -15,7 +15,6 @@ class AuthController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:255',
-            'name'     => 'required|string|trim|max:255',
             'email'    => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'phone'    => 'nullable|string|max:15',
@@ -24,8 +23,7 @@ class AuthController extends Controller
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
-            'password' => $request->password, // tự hash nhờ cast
-            'password' => $request->password, // Đảm bảo User Model có 'password' => 'hashed' cast
+            'password' => $request->password,
             'phone'    => $request->phone,
             'role'     => 'user',
         ]);
@@ -45,7 +43,6 @@ class AuthController extends Controller
         $request->validate([
             'email'    => 'required|email',
             'password' => 'required|string',
-            'password' => 'required',
         ]);
 
         $user = User::where('email', $request->email)->first();

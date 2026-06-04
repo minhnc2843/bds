@@ -3,7 +3,36 @@ import { useNavigate } from 'react-router-dom'
 import { FaCloudUploadAlt, FaTimes, FaStar } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 import { useCategories, useProvinces, useCreateListing } from '../hooks/useListings'
-import Spinner from '../components/ui/Spinner'
+
+function Field({
+  name,
+  label,
+  type = 'text',
+  placeholder,
+  required,
+  half,
+  form,
+  errors,
+  onChange,
+}) {
+  return (
+    <div className={half ? '' : 'col-span-2'}>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} {required && <span className="text-red-400">*</span>}
+      </label>
+      <input name={name} type={type}
+        value={form[name]} onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full border rounded-xl px-4 py-2.5 text-sm
+          focus:outline-none focus:ring-2 focus:ring-orange-300
+          ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
+      />
+      {errors[name] && (
+        <p className="text-red-400 text-xs mt-1">{errors[name][0]}</p>
+      )}
+    </div>
+  )
+}
 
 export default function ListingCreate() {
   const navigate  = useNavigate()
@@ -91,25 +120,6 @@ export default function ListingCreate() {
       }
     }
   }
-
-  // Component input tái sử dụng
-  const Field = ({ name, label, type = 'text', placeholder, required, half }) => (
-    <div className={half ? '' : 'col-span-2'}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      <input name={name} type={type}
-        value={form[name]} onChange={handle}
-        placeholder={placeholder}
-        className={`w-full border rounded-xl px-4 py-2.5 text-sm
-          focus:outline-none focus:ring-2 focus:ring-orange-300
-          ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
-      />
-      {errors[name] && (
-        <p className="text-red-400 text-xs mt-1">{errors[name][0]}</p>
-      )}
-    </div>
-  )
 
   const selectCls = `w-full border rounded-xl px-4 py-2.5 text-sm
     focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white`
@@ -214,7 +224,8 @@ export default function ListingCreate() {
 
             {/* Quận/Huyện */}
             <Field name="district" label="Quận / Huyện"
-              placeholder="VD: Đống Đa" half />
+              placeholder="VD: Đống Đa" half
+              form={form} errors={errors} onChange={handle} />
 
             {/* Địa chỉ */}
             <div className="col-span-2">
@@ -241,15 +252,20 @@ export default function ListingCreate() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <Field name="price" label="Giá (VNĐ)" type="number"
-              placeholder="VD: 8000000" required half />
+              placeholder="VD: 8000000" required half
+              form={form} errors={errors} onChange={handle} />
             <Field name="area"  label="Diện tích (m²)" type="number"
-              placeholder="VD: 65" required half />
+              placeholder="VD: 65" required half
+              form={form} errors={errors} onChange={handle} />
             <Field name="bedrooms"  label="Số phòng ngủ"  type="number"
-              placeholder="VD: 2" half />
+              placeholder="VD: 2" half
+              form={form} errors={errors} onChange={handle} />
             <Field name="bathrooms" label="Số phòng tắm"  type="number"
-              placeholder="VD: 1" half />
+              placeholder="VD: 1" half
+              form={form} errors={errors} onChange={handle} />
             <Field name="floor" label="Tầng" type="number"
-              placeholder="VD: 5" half />
+              placeholder="VD: 5" half
+              form={form} errors={errors} onChange={handle} />
           </div>
         </section>
 
@@ -323,9 +339,11 @@ export default function ListingCreate() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <Field name="contact_name"  label="Tên liên hệ"
-              placeholder="Nguyễn Văn A" required half />
+              placeholder="Nguyễn Văn A" required half
+              form={form} errors={errors} onChange={handle} />
             <Field name="contact_phone" label="Số điện thoại"
-              placeholder="0901234567" required half />
+              placeholder="0901234567" required half
+              form={form} errors={errors} onChange={handle} />
           </div>
         </section>
 

@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa'
 import { useListing } from '../hooks/useListings'
 import Spinner from '../components/ui/Spinner'
-import { formatPrice, formatArea, formatDate, typeLabel, statusLabel } from '../utils/format'
+import { formatPrice, formatArea, formatDate, typeLabel } from '../utils/format'
 
 export default function ListingDetail() {
   const { id } = useParams()

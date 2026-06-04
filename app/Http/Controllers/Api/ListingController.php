@@ -112,11 +112,12 @@ class ListingController extends Controller
             $this->uploadImages($listing, $request->file('images'));
         }
 
+        broadcast(new NewListingSubmitted($listing->load('user')))->toOthers();
+
         return response()->json([
             'message' => 'Đăng tin thành công, chờ admin duyệt',
             'listing' => $listing->load('images'),
         ], 201);
-        broadcast(new NewListingSubmitted($listing))->toOthers();
     }
 
     // =====================

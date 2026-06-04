@@ -1,15 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/effect-fade'
-import {
-  FaArrowRight, FaBuilding, FaKey,
-  FaShieldAlt, FaHeadset, FaStar,
-} from 'react-icons/fa'
+import { useState} from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useListings } from '../hooks/useListings'
 import { useSiteConfig } from '../hooks/useSiteConfig'
 import ListingCard from '../components/listing/ListingCard'
@@ -17,15 +7,14 @@ import SearchBar from '../components/search/SearchBar'
 import Spinner from '../components/ui/Spinner'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('all')
-  const { data: config } = useSiteConfig()
+  const [searchParams] = useSearchParams()
+  const [filters, setFilters] = useState({
+    type: searchParams.get('type') || '',
+    page: 1,
+  })
 
-  const banners     = config?.banners     || []
-  const promotions  = config?.promotions  || []
 
-  const { data: allListings,  isLoading: loadingAll  } = useListings({ per_page: 8 })
-  const { data: saleListings, isLoading: loadingSale } = useListings({ type: 'sale', per_page: 8 })
-  const { data: rentListings, isLoading: loadingRent } = useListings({ type: 'rent', per_page: 8 })
+  const { data, isLoading, isError } = useListings(filters)
 
   const tabData = {
     all:  { data: allListings,  loading: loadingAll  },

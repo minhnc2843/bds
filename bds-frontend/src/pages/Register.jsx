@@ -5,6 +5,26 @@ import toast from 'react-hot-toast'
 import api from '../api/axios'
 import useAuthStore from '../store/authStore'
 
+function Field({ name, label, type = 'text', placeholder, form, errors, onChange }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+      </label>
+      <input name={name} type={type}
+        value={form[name]} onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full border rounded-xl px-4 py-3 text-sm
+          focus:outline-none focus:ring-2 focus:ring-orange-300
+          ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
+      />
+      {errors[name] && (
+        <p className="text-red-400 text-xs mt-1">{errors[name][0]}</p>
+      )}
+    </div>
+  )
+}
+
 export default function Register() {
   const navigate  = useNavigate()
   const { setAuth } = useAuthStore()
@@ -40,24 +60,6 @@ export default function Register() {
     }
   }
 
-  const Field = ({ name, label, type = 'text', placeholder }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
-      <input name={name} type={type}
-        value={form[name]} onChange={handle}
-        placeholder={placeholder}
-        className={`w-full border rounded-xl px-4 py-3 text-sm
-          focus:outline-none focus:ring-2 focus:ring-orange-300
-          ${errors[name] ? 'border-red-400' : 'border-gray-200'}`}
-      />
-      {errors[name] && (
-        <p className="text-red-400 text-xs mt-1">{errors[name][0]}</p>
-      )}
-    </div>
-  )
-
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
@@ -74,11 +76,11 @@ export default function Register() {
           <form onSubmit={submit} className="space-y-4">
 
             <Field name="name"  label="Họ và tên"
-              placeholder="Nguyễn Văn A" />
+              placeholder="Nguyễn Văn A" form={form} errors={errors} onChange={handle} />
             <Field name="email" label="Email" type="email"
-              placeholder="example@gmail.com" />
+              placeholder="example@gmail.com" form={form} errors={errors} onChange={handle} />
             <Field name="phone" label="Số điện thoại"
-              placeholder="0901234567" />
+              placeholder="0901234567" form={form} errors={errors} onChange={handle} />
 
             {/* Password */}
             <div>
@@ -107,7 +109,8 @@ export default function Register() {
             </div>
 
             <Field name="password_confirmation" label="Xác nhận mật khẩu"
-              type="password" placeholder="Nhập lại mật khẩu" />
+              type="password" placeholder="Nhập lại mật khẩu"
+              form={form} errors={errors} onChange={handle} />
 
             <button type="submit" disabled={loading}
               className="w-full bg-orange-500 hover:bg-orange-600
